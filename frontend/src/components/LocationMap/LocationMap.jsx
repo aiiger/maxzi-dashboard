@@ -38,9 +38,9 @@ const LocationMap = ({ locations, selectedLocation, setSelectedLocation }) => {
       <div className="locations-list">
         {sortedLocations.map((location, index) => (
           <motion.div
-            key={location.location_id}
-            className={`location-item ${selectedLocation === location.location_id ? 'selected' : ''}`}
-            onClick={() => setSelectedLocation(location.location_id)}
+            key={location.location_name || index}
+            className={`location-item ${selectedLocation === location.location_name ? 'selected' : ''}`}
+            onClick={() => setSelectedLocation(location.location_name)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index }}
