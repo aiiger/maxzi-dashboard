@@ -11,6 +11,7 @@ import PlatformCard from './components/PlatformCards/PlatformCard';
 import AIPanel from './components/AIInsights/AIPanel';
 import RevenueChart from './components/Charts/RevenueChart';
 import LocationMap from './components/LocationMap/LocationMap';
+import FloatingChatbot from './components/AIChat/FloatingChatbot';
 import { dashboardAPI } from './services/api';
 import './App.css';
 
@@ -308,15 +309,8 @@ function App() {
 
       </div>
 
-      {/* Floating Help Button */}
-      <motion.button 
-        className="floating-help-btn"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => alert('Help center coming soon!')}
-      >
-        <span>💡</span>
-      </motion.button>
+      {/* Floating AI Chatbot with Maxzi Mascot */}
+      <FloatingChatbot />
 
     </div>
   );

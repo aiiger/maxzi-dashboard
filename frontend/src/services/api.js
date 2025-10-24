@@ -82,6 +82,22 @@ export const dashboardAPI = {
   healthCheck: async () => {
     const response = await api.get('/health');
     return response.data;
+  },
+
+  // Data Status & Tracking
+  getDataStatus: async () => {
+    const response = await api.get('/data-status');
+    return response.data;
+  },
+
+  getDataStatusSummary: async () => {
+    const response = await api.get('/data-status/summary');
+    return response.data;
+  },
+
+  getPlatformStatus: async (platform) => {
+    const response = await api.get(`/data-status/platform/${platform}`);
+    return response.data;
   }
 };
 
