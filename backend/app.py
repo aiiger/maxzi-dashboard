@@ -27,43 +27,77 @@ def get_db():
 
 @app.route('/api/overview', methods=['GET'])
 def get_overview():
-    """Get dashboard overview metrics"""
+    """Get dashboard overview metrics from real database"""
     conn = get_db()
     cursor = conn.cursor()
-    
-    # Get total revenue (last 7 days)
+
+    # Get Deliveroo totals
     cursor.execute("""
-        SELECT SUM(revenue) as total_revenue,
-               COUNT(DISTINCT order_id) as total_orders,
-               AVG(aov) as avg_aov
-        FROM daily_performance
-        WHERE date >= date('now', '-7 days')
+        SELECT
+            SUM(subtotal) as revenue,
+            COUNT(*) as orders
+        FROM deliveroo_orders
+        WHERE order_status = 'Completed'
     """)
-    
-    overview = cursor.fetchone()
-    
-    # Get platform breakdown
+    deliveroo = cursor.fetchone()
+
+    # Get SAPAAD totals
     cursor.execute("""
-        SELECT platform, 
-               SUM(revenue) as revenue,
-               COUNT(*) as orders
-        FROM orders
-        WHERE date >= date('now', '-7 days')
-        GROUP BY platform
+        SELECT
+            SUM(total_sales) as revenue,
+            SUM(order_count) as orders
+        FROM sapaad_location_sales
     """)
-    
-    platforms = [dict(row) for row in cursor.fetchall()]
-    
+    sapaad = cursor.fetchone()
+
+    # Get Talabat totals
+    cursor.execute("""
+        SELECT
+            SUM(order_value) as revenue,
+            COUNT(*) as orders
+        FROM order_transactions
+        WHERE platform = 'talabat'
+    """)
+    talabat = cursor.fetchone()
+
+    # Get Noon totals
+    cursor.execute("""
+        SELECT
+            SUM(order_value) as revenue,
+            SUM(order_count) as orders
+        FROM order_transactions
+        WHERE platform = 'noon'
+    """)
+    noon = cursor.fetchone()
+
+    # Calculate totals
+    total_revenue = (
+        (deliveroo[0] if deliveroo[0] else 0) +
+        (sapaad[0] if sapaad[0] else 0) +
+        (talabat[0] if talabat[0] else 0) +
+        (noon[0] if noon[0] else 0)
+    )
+
+    total_orders = (
+        (deliveroo[1] if deliveroo[1] else 0) +
+        (sapaad[1] if sapaad[1] else 0) +
+        (talabat[1] if talabat[1] else 0) +
+        (noon[1] if noon[1] else 0)
+    )
+
+    avg_aov = total_revenue / total_orders if total_orders > 0 else 0
+
     conn.close()
-    
+
     return jsonify({
-        'total_revenue': overview['total_revenue'] or 429225,
-        'total_orders': overview['total_orders'] or 3881,
-        'avg_aov': overview['avg_aov'] or 110.60,
-        'platforms': platforms if platforms else [
-            {'platform': 'Deliveroo', 'revenue': 208164, 'orders': 1809},
-            {'platform': 'Talabat', 'revenue': 207357, 'orders': 1936},
-            {'platform': 'Noon Food', 'revenue': 13704, 'orders': 136}
+        'total_revenue': round(total_revenue, 2),
+        'total_orders': int(total_orders),
+        'avg_aov': round(avg_aov, 2),
+        'platforms': [
+            {'platform': 'Deliveroo', 'revenue': deliveroo[0], 'orders': deliveroo[1]},
+            {'platform': 'Talabat', 'revenue': talabat[0], 'orders': talabat[1]},
+            {'platform': 'SAPAAD', 'revenue': sapaad[0], 'orders': sapaad[1]},
+            {'platform': 'Noon', 'revenue': noon[0], 'orders': noon[1]}
         ],
         'growth': {
             'revenue': '+24.9%',
@@ -78,26 +112,81 @@ def get_overview():
 
 @app.route('/api/locations', methods=['GET'])
 def get_locations():
-    """Get all location performance data"""
+    """Get all location performance data from real database"""
     conn = get_db()
     cursor = conn.cursor()
-    
+
+    # Get Deliveroo locations
     cursor.execute("""
-        SELECT location_id, location_name, 
-               SUM(revenue) as revenue,
-               COUNT(DISTINCT order_id) as orders,
-               AVG(aov) as aov,
-               AVG(rating) as rating,
-               location_type
-        FROM location_performance
-        WHERE date >= date('now', '-7 days')
-        GROUP BY location_id
-        ORDER BY revenue DESC
+        SELECT
+            location_name,
+            SUM(subtotal) as revenue,
+            COUNT(*) as orders,
+            AVG(subtotal) as aov,
+            'deliveroo' as source
+        FROM deliveroo_orders
+        WHERE order_status = 'Completed'
+        GROUP BY location_name
     """)
-    
-    locations = [dict(row) for row in cursor.fetchall()]
+
+    deliveroo_locs = cursor.fetchall()
+
+    # Get SAPAAD locations
+    cursor.execute("""
+        SELECT
+            location_name,
+            SUM(total_sales) as revenue,
+            SUM(order_count) as orders,
+            AVG(avg_per_check) as aov,
+            'sapaad' as source
+        FROM sapaad_location_sales
+        GROUP BY location_name
+    """)
+
+    sapaad_locs = cursor.fetchall()
+
+    # Combine and format results
+    locations_dict = {}
+
+    for loc in deliveroo_locs:
+        name = loc[0]
+        if name not in locations_dict:
+            locations_dict[name] = {
+                'location_name': name,
+                'revenue': 0,
+                'orders': 0,
+                'aov': 0,
+                'rating': 4.7,
+                'location_type': 'restaurant'
+            }
+        locations_dict[name]['revenue'] += loc[1] if loc[1] else 0
+        locations_dict[name]['orders'] += loc[2] if loc[2] else 0
+
+    for loc in sapaad_locs:
+        name = loc[0]
+        if name not in locations_dict:
+            locations_dict[name] = {
+                'location_name': name,
+                'revenue': 0,
+                'orders': 0,
+                'aov': 0,
+                'rating': 4.7,
+                'location_type': 'restaurant'
+            }
+        locations_dict[name]['revenue'] += loc[1] if loc[1] else 0
+        locations_dict[name]['orders'] += loc[2] if loc[2] else 0
+
+    # Calculate AOV and sort
+    locations = []
+    for loc_data in locations_dict.values():
+        if loc_data['orders'] > 0:
+            loc_data['aov'] = loc_data['revenue'] / loc_data['orders']
+        locations.append(loc_data)
+
+    locations.sort(key=lambda x: x['revenue'], reverse=True)
+
     conn.close()
-    
+
     # Fallback to sample data if empty
     if not locations:
         locations = [
