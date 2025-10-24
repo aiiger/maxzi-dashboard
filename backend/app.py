@@ -13,7 +13,7 @@ import data_tracking_system
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
-DATABASE = r'Y:\Maxzi Analytics v2\New iteration\maxzi-dashboard\backend\database_CORRECT_20251024_074959.sqlite'
+DATABASE = 'database_CORRECT_20251024_074959.sqlite'
 
 def get_db():
     """Get database connection"""
