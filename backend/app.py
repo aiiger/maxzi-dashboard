@@ -12,7 +12,7 @@ import random
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
-DATABASE = 'maxzi_analytics.db'
+DATABASE = 'database_CORRECT_20251024_074959.sqlite'
 
 def get_db():
     """Get database connection"""
