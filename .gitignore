@@ -34,6 +34,12 @@ Thumbs.db
 dist/
 build/
 
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Temporary files
 tmp/
 temp/
