@@ -33,7 +33,7 @@ def get_overview():
     # Get total revenue (last 7 days)
     cursor.execute("""
         SELECT SUM(revenue) as total_revenue,
-               COUNT(DISTINCT order_id) as total_orders,
+               SUM(orders) as total_orders,
                AVG(aov) as avg_aov
         FROM daily_performance
         WHERE date >= date('now', '-7 days')
