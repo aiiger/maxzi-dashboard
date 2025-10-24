@@ -11,22 +11,16 @@ const FloatingSidebar = ({ activeView, setActiveView }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const menuItems = [
-    { id: 'overview', icon: '🏠', label: 'Overview', scrollTo: 'kpi-section' },
-    { id: 'platforms', icon: '🚚', label: 'Platforms', scrollTo: 'platforms-section' },
-    { id: 'locations', icon: '📍', label: 'Locations', scrollTo: 'locations-section' },
-    { id: 'social', icon: '📱', label: 'Social Media', scrollTo: 'social-section' },
-    { id: 'analytics', icon: '📊', label: 'Analytics', scrollTo: 'charts-section' },
-    { id: 'reports', icon: '📄', label: 'Reports', scrollTo: 'quick-actions' }
+    { id: 'overview', icon: '🏠', label: 'Overview' },
+    { id: 'platforms', icon: '🚚', label: 'Platforms' },
+    { id: 'locations', icon: '📍', label: 'Locations' },
+    { id: 'social', icon: '📱', label: 'Social Media' },
+    { id: 'analytics', icon: '📊', label: 'Analytics' },
+    { id: 'reports', icon: '📄', label: 'Reports' }
   ];
 
   const handleNavClick = (item) => {
     setActiveView(item.id);
-
-    // Smooth scroll to section
-    const element = document.getElementById(item.scrollTo);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   };
 
   return (

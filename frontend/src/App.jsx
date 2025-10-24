@@ -138,57 +138,59 @@ function App() {
           <AIPanel insights={aiInsights} />
         )}
 
-        {/* KPI Cards Row */}
-        <motion.div
-          id="kpi-section"
-          className="kpi-cards-grid"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          {overview && (
-            <>
-              <KPICard
-                title="Total Revenue"
-                value={`AED ${overview.total_revenue.toLocaleString()}`}
-                change={overview.growth.revenue}
-                trend="up"
-                icon="💰"
-                color="#8BC34A"
-              />
-              <KPICard
-                title="Total Orders"
-                value={overview.total_orders.toLocaleString()}
-                change={overview.growth.orders}
-                trend="up"
-                icon="📦"
-                color="#00CCBC"
-              />
-              <KPICard
-                title="Average Order Value"
-                value={`AED ${overview.avg_aov.toFixed(2)}`}
-                change={overview.growth.aov}
-                trend="down"
-                icon="💵"
-                color="#F97316"
-              />
-              {realtimeData && (
+        {/* KPI Cards Row - Show on Overview and Analytics views */}
+        {(activeView === 'overview' || activeView === 'analytics') && (
+          <motion.div
+            className="kpi-cards-grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            {overview && (
+              <>
                 <KPICard
-                  title="Live Orders"
-                  value={realtimeData.live_orders}
-                  change="Real-time"
-                  trend="neutral"
-                  icon="⚡"
-                  color="#7C3AED"
-                  isLive={true}
+                  title="Total Revenue"
+                  value={`AED ${overview.total_revenue.toLocaleString()}`}
+                  change={overview.growth.revenue}
+                  trend="up"
+                  icon="💰"
+                  color="#8BC34A"
                 />
-              )}
-            </>
-          )}
-        </motion.div>
+                <KPICard
+                  title="Total Orders"
+                  value={overview.total_orders.toLocaleString()}
+                  change={overview.growth.orders}
+                  trend="up"
+                  icon="📦"
+                  color="#00CCBC"
+                />
+                <KPICard
+                  title="Average Order Value"
+                  value={`AED ${overview.avg_aov.toFixed(2)}`}
+                  change={overview.growth.aov}
+                  trend="down"
+                  icon="💵"
+                  color="#F97316"
+                />
+                {realtimeData && (
+                  <KPICard
+                    title="Live Orders"
+                    value={realtimeData.live_orders}
+                    change="Real-time"
+                    trend="neutral"
+                    icon="⚡"
+                    color="#7C3AED"
+                    isLive={true}
+                  />
+                )}
+              </>
+            )}
+          </motion.div>
+        )}
 
-        {/* Main Content Grid */}
-        <div className="main-content-grid">
+        {/* OVERVIEW VIEW - Complete Dashboard */}
+        {activeView === 'overview' && (
+          <div className="main-content-grid">
           
           {/* Left Column */}
           <div className="left-column">
@@ -234,13 +236,11 @@ function App() {
           <div className="right-column">
 
             {/* Location Map */}
-            <div id="locations-section">
-              <LocationMap
-                locations={locations}
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-              />
-            </div>
+            <LocationMap
+              locations={locations}
+              selectedLocation={selectedLocation}
+              setSelectedLocation={setSelectedLocation}
+            />
 
             {/* Social Media Performance */}
             {socialMedia && (
@@ -311,6 +311,148 @@ function App() {
           </div>
 
         </div>
+        )}
+
+        {/* PLATFORMS VIEW - Platform Performance Analysis */}
+        {activeView === 'platforms' && (
+          <div className="main-content-grid">
+            <div className="full-width-section">
+              <motion.div
+                className="platforms-section"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="section-title">🚀 Platform Performance Analysis</h2>
+                <div className="platforms-grid">
+                  {platforms.map((platform, index) => (
+                    <PlatformCard
+                      key={index}
+                      platform={platform}
+                      delay={0.1 * index}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* LOCATIONS VIEW - Location Performance */}
+        {activeView === 'locations' && (
+          <div className="main-content-grid">
+            <div className="full-width-section">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="section-title">📍 Location Performance</h2>
+                <LocationMap
+                  locations={locations}
+                  selectedLocation={selectedLocation}
+                  setSelectedLocation={setSelectedLocation}
+                />
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* ANALYTICS VIEW - Charts and Trends */}
+        {activeView === 'analytics' && (
+          <div className="main-content-grid">
+            <div className="full-width-section">
+              <motion.div
+                className="glass-card chart-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="card-header">
+                  <h3>📊 Revenue Trends (30 Days)</h3>
+                  <button className="expand-btn">⛶</button>
+                </div>
+                <RevenueChart />
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* SOCIAL MEDIA VIEW - Social Performance */}
+        {activeView === 'social' && socialMedia && (
+          <div className="main-content-grid">
+            <div className="full-width-section">
+              <motion.div
+                className="glass-card social-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2>📱 Social Media Performance</h2>
+                <div className="social-grid">
+                  <div className="social-metric instagram">
+                    <div className="social-icon">📸</div>
+                    <div className="social-stats">
+                      <div className="social-value">{socialMedia.instagram.followers.toLocaleString()}</div>
+                      <div className="social-label">Instagram Followers</div>
+                      <div className="social-growth">{socialMedia.instagram.growth}</div>
+                    </div>
+                  </div>
+                  <div className="social-metric facebook">
+                    <div className="social-icon">📘</div>
+                    <div className="social-stats">
+                      <div className="social-value">{socialMedia.facebook.followers.toLocaleString()}</div>
+                      <div className="social-label">Facebook Followers</div>
+                      <div className="social-growth">{socialMedia.facebook.growth}</div>
+                    </div>
+                  </div>
+                  <div className="social-metric linktree">
+                    <div className="social-icon">🔗</div>
+                    <div className="social-stats">
+                      <div className="social-value">{socialMedia.linktree.ctr}</div>
+                      <div className="social-label">Linktree CTR</div>
+                      <div className="social-growth">Outstanding</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* REPORTS VIEW - Quick Actions */}
+        {activeView === 'reports' && (
+          <div className="main-content-grid">
+            <div className="full-width-section">
+              <motion.div
+                className="glass-card quick-actions-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2>⚡ Quick Actions & Reports</h2>
+                <div className="quick-actions-grid">
+                  <button className="action-btn" onClick={() => window.open('/reports', '_blank')}>
+                    <span>📊</span>
+                    <span>Generate Report</span>
+                  </button>
+                  <button className="action-btn" onClick={() => alert('Email team feature coming soon!')}>
+                    <span>📨</span>
+                    <span>Email Team</span>
+                  </button>
+                  <button className="action-btn" onClick={loadDashboardData}>
+                    <span>🔄</span>
+                    <span>Refresh Data</span>
+                  </button>
+                  <button className="action-btn" onClick={() => setActiveView('settings')}>
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
 
       </div>
 
