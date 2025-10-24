@@ -1,0 +1,109 @@
+.kpi-card {
+  background: rgba(60, 60, 60, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--card-color, #8BC34A) 50%, 
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.kpi-card:hover::before {
+  opacity: 1;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.kpi-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 8px currentColor);
+}
+
+.live-badge {
+  padding: 4px 8px;
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.kpi-content {
+  margin-bottom: 12px;
+}
+
+.kpi-value {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  font-family: 'Cinzel', serif;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.kpi-title {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kpi-change {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kpi-card {
+    padding: 20px;
+  }
+
+  .kpi-value {
+    font-size: 28px;
+  }
+
+  .kpi-icon {
+    font-size: 28px;
+  }
+}

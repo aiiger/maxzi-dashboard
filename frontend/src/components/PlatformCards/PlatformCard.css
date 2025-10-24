@@ -1,0 +1,162 @@
+.platform-card {
+  background: rgba(40, 40, 40, 0.8);
+  backdrop-filter: blur(10px);
+  border-left: 4px solid;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.platform-card:hover {
+  background: rgba(50, 50, 50, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.platform-card.expanded {
+  background: rgba(50, 50, 50, 0.95);
+}
+
+.platform-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.platform-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.platform-info {
+  flex: 1;
+}
+
+.platform-info h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.platform-status {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.platform-rating {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.platform-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.platform-metric {
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.platform-expanded {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.expanded-stats {
+  margin-bottom: 16px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-row span:first-child {
+  flex: 0 0 120px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.growth-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.view-details-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .platform-metrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .platform-metric {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

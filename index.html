@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAXZI Intelligence Dashboard 2025</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- HTML2PDF for exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <div class="logo-text">
+                    <h1>MAXZI</h1>
+                    <p>Intelligence Hub</p>
+                </div>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- ANALYTICS Section -->
+            <div class="nav-section">
+                <div class="nav-section-header">
+                    <span class="nav-section-icon">📊</span>
+                    <span class="nav-section-title">ANALYTICS</span>
+                </div>
+                <div class="nav-section-items">
+                    <a href="#overview" class="nav-item active" data-view="overview">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-label">Overview Dashboard</span>
+                    </a>
+                    <a href="#operations" class="nav-item" data-view="operations">
+                        <span class="nav-icon">⚡</span>
+                        <span class="nav-label">Operations Monitor</span>
+                    </a>
+                    <a href="#platforms" class="nav-item" data-view="platforms">
+                        <span class="nav-icon">🚚</span>
+                        <span class="nav-label">Platform Deep Dive</span>
+                    </a>
+                    <a href="#locations" class="nav-item" data-view="locations">
+                        <span class="nav-icon">📍</span>
+                        <span class="nav-label">Location Intelligence</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BUSINESS Section -->
+            <div class="nav-section">
+                <div class="nav-section-header">
+                    <span class="nav-section-icon">💼</span>
+                    <span class="nav-section-title">BUSINESS</span>
+                </div>
+                <div class="nav-section-items">
+                    <a href="#menu" class="nav-item" data-view="menu">
+                        <span class="nav-icon">🍔</span>
+                        <span class="nav-label">Menu Engineering</span>
+                    </a>
+                    <a href="#smash" class="nav-item" data-view="smash">
+                        <span class="nav-icon">🔥</span>
+                        <span class="nav-label">Smash & Sear</span>
+                    </a>
+                    <a href="#reports" class="nav-item" data-view="reports">
+                        <span class="nav-icon">📄</span>
+                        <span class="nav-label">Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ENGAGEMENT Section -->
+            <div class="nav-section">
+                <div class="nav-section-header">
+                    <span class="nav-section-icon">📱</span>
+                    <span class="nav-section-title">ENGAGEMENT</span>
+                </div>
+                <div class="nav-section-items">
+                    <a href="#social" class="nav-item" data-view="social">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-label">Social Intelligence</span>
+                    </a>
+                    <a href="#reputation" class="nav-item" data-view="reputation">
+                        <span class="nav-icon">⭐</span>
+                        <span class="nav-label">Reputation Monitor</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Upload Section -->
+        <div class="sidebar-footer">
+            <button class="upload-btn" id="uploadBtn">
+                <span>📤</span>
+                <span>Upload Data</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h2 id="viewTitle">Overview Dashboard</h2>
+            </div>
+            <div class="top-bar-right">
+                <!-- Filters -->
+                <div class="filter-group">
+                    <button class="filter-btn" id="dateFilterBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span id="dateFilterText">Last 7 Days</span>
+                    </button>
+                    
+                    <button class="filter-btn" id="locationFilterBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span id="locationFilterText">All Locations</span>
+                    </button>
+                    
+                    <button class="filter-btn" id="platformFilterBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span id="platformFilterText">All Platforms</span>
+                    </button>
+                </div>
+
+                <!-- Export Button -->
+                <button class="export-btn" id="exportBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Views -->
+        <div class="dashboard-container">
+            <!-- Overview Dashboard -->
+            <div id="overview-view" class="view-content active">
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">💰</div>
+                        <div class="kpi-content">
+                            <div class="kpi-label">Total Revenue</div>
+                            <div class="kpi-value" id="totalRevenue">AED 0</div>
+                            <div class="kpi-change positive">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span id="revenueChange">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📦</div>
+                        <div class="kpi-content">
+                            <div class="kpi-label">Total Orders</div>
+                            <div class="kpi-value" id="totalOrders">0</div>
+                            <div class="kpi-change positive">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span id="ordersChange">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon">💳</div>
+                        <div class="kpi-content">
+                            <div class="kpi-label">Average Order Value</div>
+                            <div class="kpi-value" id="avgOrderValue">AED 0</div>
+                            <div class="kpi-change positive">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span id="aovChange">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon">⭐</div>
+                        <div class="kpi-content">
+                            <div class="kpi-label">Customer Rating</div>
+                            <div class="kpi-value" id="avgRating">0.0</div>
+                            <div class="kpi-change positive">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span id="ratingChange">+0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Revenue Trend</h3>
+                        <div class="chart-actions">
+                            <button class="chart-period-btn active" data-period="7">7D</button>
+                            <button class="chart-period-btn" data-period="30">30D</button>
+                            <button class="chart-period-btn" data-period="90">90D</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Platform Performance -->
+                <div class="platform-grid">
+                    <div class="platform-card deliveroo">
+                        <div class="platform-header">
+                            <div class="platform-icon">🚴</div>
+                            <h4>Deliveroo</h4>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="platform-stat">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value" id="deliverooRevenue">AED 0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">Orders</span>
+                                <span class="stat-value" id="deliverooOrders">0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">AOV</span>
+                                <span class="stat-value" id="deliverooAOV">AED 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="platform-card talabat">
+                        <div class="platform-header">
+                            <div class="platform-icon">🍜</div>
+                            <h4>Talabat</h4>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="platform-stat">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value" id="talabatRevenue">AED 0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">Orders</span>
+                                <span class="stat-value" id="talabatOrders">0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">AOV</span>
+                                <span class="stat-value" id="talabatAOV">AED 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="platform-card noon">
+                        <div class="platform-header">
+                            <div class="platform-icon">🌙</div>
+                            <h4>Noon Food</h4>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="platform-stat">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value" id="noonRevenue">AED 0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">Orders</span>
+                                <span class="stat-value" id="noonOrders">0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">AOV</span>
+                                <span class="stat-value" id="noonAOV">AED 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="platform-card sapaad">
+                        <div class="platform-header">
+                            <div class="platform-icon">🍽️</div>
+                            <h4>Dine-In (SAPAAD)</h4>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="platform-stat">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value" id="sapaadRevenue">AED 0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">Orders</span>
+                                <span class="stat-value" id="sapaadOrders">0</span>
+                            </div>
+                            <div class="platform-stat">
+                                <span class="stat-label">AOV</span>
+                                <span class="stat-value" id="sapaadAOV">AED 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other views (placeholder for now) -->
+            <div id="operations-view" class="view-content">
+                <h3>Operations Monitor - Coming Soon</h3>
+            </div>
+            <div id="platforms-view" class="view-content">
+                <h3>Platform Deep Dive - Coming Soon</h3>
+            </div>
+            <div id="locations-view" class="view-content">
+                <h3>Location Intelligence - Coming Soon</h3>
+            </div>
+            <div id="menu-view" class="view-content">
+                <h3>Menu Engineering - Coming Soon</h3>
+            </div>
+            <div id="smash-view" class="view-content">
+                <h3>Smash & Sear - Coming Soon</h3>
+            </div>
+            <div id="reports-view" class="view-content">
+                <h3>Reports - Coming Soon</h3>
+            </div>
+            <div id="social-view" class="view-content">
+                <h3>Social Intelligence - Coming Soon</h3>
+            </div>
+            <div id="reputation-view" class="view-content">
+                <h3>Reputation Monitor - Coming Soon</h3>
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload Data</h3>
+                <button class="modal-close" id="closeUploadModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-section">
+                    <h4>Deliveroo Data</h4>
+                    <div class="dropzone" id="deliverooDropzone">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drop CSV file or click to browse</p>
+                        <input type="file" id="deliverooFile" accept=".csv" hidden>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h4>Talabat Data</h4>
+                    <div class="dropzone" id="talabatDropzone">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drop CSV file or click to browse</p>
+                        <input type="file" id="talabatFile" accept=".csv" hidden>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h4>Noon Food Data</h4>
+                    <div class="dropzone" id="noonDropzone">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drop CSV file or click to browse</p>
+                        <input type="file" id="noonFile" accept=".csv" hidden>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h4>SAPAAD Dine-In Data</h4>
+                    <div class="dropzone" id="sapaadDropzone">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drop CSV file or click to browse</p>
+                        <input type="file" id="sapaadFile" accept=".csv" hidden>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data-manager.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
