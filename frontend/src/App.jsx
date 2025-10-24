@@ -139,7 +139,8 @@ function App() {
         )}
 
         {/* KPI Cards Row */}
-        <motion.div 
+        <motion.div
+          id="kpi-section"
           className="kpi-cards-grid"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -193,7 +194,8 @@ function App() {
           <div className="left-column">
             
             {/* Revenue Trend Chart */}
-            <motion.div 
+            <motion.div
+              id="charts-section"
               className="glass-card chart-card"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -207,7 +209,8 @@ function App() {
             </motion.div>
 
             {/* Platform Performance */}
-            <motion.div 
+            <motion.div
+              id="platforms-section"
               className="platforms-section"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -229,13 +232,15 @@ function App() {
 
           {/* Right Column */}
           <div className="right-column">
-            
+
             {/* Location Map */}
-            <LocationMap 
-              locations={locations}
-              selectedLocation={selectedLocation}
-              setSelectedLocation={setSelectedLocation}
-            />
+            <div id="locations-section">
+              <LocationMap
+                locations={locations}
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+              />
+            </div>
 
             {/* Social Media Performance */}
             {socialMedia && (
