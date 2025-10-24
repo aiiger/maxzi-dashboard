@@ -7,7 +7,7 @@ import sqlite3
 from datetime import datetime, timedelta
 import random
 
-DATABASE = r'Y:\Maxzi Analytics v2\backend\database.sqlite'
+DATABASE = r'Y:\Maxzi Analytics v2\backend\database_CORRECT_20251024_074959.sqlite'
 
 def init_database():
     """Initialize database with schema and sample data"""
