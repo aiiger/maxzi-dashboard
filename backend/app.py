@@ -8,6 +8,7 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 import sqlite3
 import random
+import data_tracking_system
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
@@ -401,6 +402,49 @@ def get_category_performance():
         {'category': 'Cold Beverages', 'revenue': 63911, 'share': 9.41, 'growth': 0.7},
         {'category': 'Rice & Pasta', 'revenue': 57102, 'share': 8.40, 'growth': 22.8}
     ])
+
+# ============================================================================
+# DATA TRACKING & STATUS ENDPOINTS
+# ============================================================================
+
+@app.route('/api/data-status', methods=['GET'])
+def get_data_status():
+    """Get current data status for all platforms - shows what data is missing"""
+    try:
+        status = data_tracking_system.get_data_status()
+        return jsonify(status)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/data-status/summary', methods=['GET'])
+def get_data_status_summary():
+    """Get AI-friendly summary of missing data"""
+    try:
+        summary = data_tracking_system.get_ai_summary()
+        return jsonify({
+            'summary': summary,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/data-status/platform/<platform>', methods=['GET'])
+def get_platform_status(platform):
+    """Get detailed status for a specific platform"""
+    try:
+        status = data_tracking_system.get_data_status()
+        platform_data = status.get('platforms', {}).get(platform.lower())
+
+        if not platform_data:
+            return jsonify({'error': f'Platform {platform} not found'}), 404
+
+        return jsonify({
+            'platform': platform,
+            'data': platform_data,
+            'check_date': status['check_date']
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
