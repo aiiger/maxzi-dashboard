@@ -65,12 +65,8 @@ function App() {
       setLocations(locationsData);
       setPlatforms(platformsData);
 
-      // Set mock data for features not yet implemented in backend
-      setSocialMedia({
-        instagram: { followers: 12500, growth: '+8.5%' },
-        facebook: { followers: 8200, growth: '+5.2%' },
-        linktree: { ctr: '12.8%' }
-      });
+      // Only set social media if backend returns it - NO MOCK DATA
+      setSocialMedia(null);
 
     } catch (error) {
       console.error('Error loading dashboard:', error);
@@ -378,7 +374,7 @@ function App() {
         )}
 
         {/* SOCIAL MEDIA VIEW - Social Performance */}
-        {activeView === 'social' && socialMedia && (
+        {activeView === 'social' && (
           <div className="main-content-grid">
             <div className="full-width-section">
               <motion.div
@@ -388,32 +384,39 @@ function App() {
                 transition={{ duration: 0.5 }}
               >
                 <h2>📱 Social Media Performance</h2>
-                <div className="social-grid">
-                  <div className="social-metric instagram">
-                    <div className="social-icon">📸</div>
-                    <div className="social-stats">
-                      <div className="social-value">{socialMedia.instagram.followers.toLocaleString()}</div>
-                      <div className="social-label">Instagram Followers</div>
-                      <div className="social-growth">{socialMedia.instagram.growth}</div>
+                {!socialMedia ? (
+                  <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
+                    <p style={{ fontSize: '18px', marginBottom: '10px' }}>No social media data available</p>
+                    <p style={{ fontSize: '14px' }}>Connect Meta API to view Instagram and Facebook analytics</p>
+                  </div>
+                ) : (
+                  <div className="social-grid">
+                    <div className="social-metric instagram">
+                      <div className="social-icon">📸</div>
+                      <div className="social-stats">
+                        <div className="social-value">{socialMedia?.instagram?.followers?.toLocaleString() || 'N/A'}</div>
+                        <div className="social-label">Instagram Followers</div>
+                        <div className="social-growth">{socialMedia?.instagram?.growth || 'N/A'}</div>
+                      </div>
+                    </div>
+                    <div className="social-metric facebook">
+                      <div className="social-icon">📘</div>
+                      <div className="social-stats">
+                        <div className="social-value">{socialMedia?.facebook?.followers?.toLocaleString() || 'N/A'}</div>
+                        <div className="social-label">Facebook Followers</div>
+                        <div className="social-growth">{socialMedia?.facebook?.growth || 'N/A'}</div>
+                      </div>
+                    </div>
+                    <div className="social-metric linktree">
+                      <div className="social-icon">🔗</div>
+                      <div className="social-stats">
+                        <div className="social-value">{socialMedia?.linktree?.ctr || 'N/A'}</div>
+                        <div className="social-label">Linktree CTR</div>
+                        <div className="social-growth">{socialMedia?.linktree?.growth || 'N/A'}</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="social-metric facebook">
-                    <div className="social-icon">📘</div>
-                    <div className="social-stats">
-                      <div className="social-value">{socialMedia.facebook.followers.toLocaleString()}</div>
-                      <div className="social-label">Facebook Followers</div>
-                      <div className="social-growth">{socialMedia.facebook.growth}</div>
-                    </div>
-                  </div>
-                  <div className="social-metric linktree">
-                    <div className="social-icon">🔗</div>
-                    <div className="social-stats">
-                      <div className="social-value">{socialMedia.linktree.ctr}</div>
-                      <div className="social-label">Linktree CTR</div>
-                      <div className="social-growth">Outstanding</div>
-                    </div>
-                  </div>
-                </div>
+                )}
               </motion.div>
             </div>
           </div>
