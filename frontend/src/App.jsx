@@ -215,13 +215,19 @@ function App() {
             >
               <h3 className="section-title">🚀 Platform Performance</h3>
               <div className="platforms-grid">
-                {platforms.map((platform, index) => (
-                  <PlatformCard 
-                    key={index}
-                    platform={platform}
-                    delay={0.1 * index}
-                  />
-                ))}
+                {Array.isArray(platforms) && platforms.length > 0 ? (
+                  platforms.map((platform, index) => (
+                    <PlatformCard
+                      key={index}
+                      platform={platform}
+                      delay={0.1 * index}
+                    />
+                  ))
+                ) : (
+                  <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
+                    <p>No platform data available</p>
+                  </div>
+                )}
               </div>
             </motion.div>
 
@@ -320,13 +326,20 @@ function App() {
               >
                 <h2 className="section-title">🚀 Platform Performance Analysis</h2>
                 <div className="platforms-grid">
-                  {platforms.map((platform, index) => (
-                    <PlatformCard
-                      key={index}
-                      platform={platform}
-                      delay={0.1 * index}
-                    />
-                  ))}
+                  {Array.isArray(platforms) && platforms.length > 0 ? (
+                    platforms.map((platform, index) => (
+                      <PlatformCard
+                        key={index}
+                        platform={platform}
+                        delay={0.1 * index}
+                      />
+                    ))
+                  ) : (
+                    <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
+                      <p style={{ fontSize: '18px', marginBottom: '10px' }}>No platform data available</p>
+                      <p style={{ fontSize: '14px' }}>Check backend connection at http://localhost:3004</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </div>
