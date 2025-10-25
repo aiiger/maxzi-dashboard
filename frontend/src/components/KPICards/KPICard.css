@@ -1,13 +1,16 @@
 .kpi-card {
-  background: rgba(60, 60, 60, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 195, 74, 0.2);
   border-radius: 16px;
   padding: 24px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .kpi-card::before {
