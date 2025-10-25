@@ -8,7 +8,10 @@ import { motion } from 'framer-motion';
 import './LocationMap.css';
 
 const LocationMap = ({ locations, selectedLocation, setSelectedLocation }) => {
-  
+
+  // Validate that locations is an array
+  const locationsArray = Array.isArray(locations) ? locations : [];
+
   const getPerformanceColor = (location) => {
     const aov = location.aov || 0;
     if (aov > 120) return '#22C55E';
@@ -21,7 +24,7 @@ const LocationMap = ({ locations, selectedLocation, setSelectedLocation }) => {
     return type === 'franchise' ? '🤝' : '🏢';
   };
 
-  const sortedLocations = [...locations].sort((a, b) => b.revenue - a.revenue);
+  const sortedLocations = [...locationsArray].sort((a, b) => (b.revenue || 0) - (a.revenue || 0));
 
   return (
     <motion.div 
@@ -32,10 +35,16 @@ const LocationMap = ({ locations, selectedLocation, setSelectedLocation }) => {
     >
       <div className="card-header">
         <h3>📍 Location Performance</h3>
-        <span className="location-count">{locations.length} Active</span>
+        <span className="location-count">{locationsArray.length} Active</span>
       </div>
 
-      <div className="locations-list">
+      {locationsArray.length === 0 ? (
+        <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
+          <p style={{ fontSize: '18px', marginBottom: '10px' }}>No location data available</p>
+          <p style={{ fontSize: '14px' }}>Check backend connection at http://localhost:3004</p>
+        </div>
+      ) : (
+        <div className="locations-list">
         {sortedLocations.map((location, index) => (
           <motion.div
             key={location.location_name || index}
@@ -103,6 +112,7 @@ const LocationMap = ({ locations, selectedLocation, setSelectedLocation }) => {
           </motion.div>
         ))}
       </div>
+      )}
 
       <div className="location-legend">
         <div className="legend-item">
