@@ -35,11 +35,14 @@ const RevenueChart = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadChartData();
+    // Backend doesn't have revenue-trend endpoint yet
+    // loadChartData();
+    setLoading(false);
   }, []);
 
   const loadChartData = async () => {
     try {
+      // Endpoint not available yet: /api/analytics/revenue-trend
       const data = await dashboardAPI.getRevenueTrend();
       
       const chartConfig = {
@@ -136,7 +139,12 @@ const RevenueChart = () => {
   }
 
   if (!chartData) {
-    return <div className="chart-error">Unable to load chart data</div>;
+    return (
+      <div className="chart-error" style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
+        <p style={{ fontSize: '18px', marginBottom: '10px' }}>Revenue Trend Chart</p>
+        <p style={{ fontSize: '14px' }}>Backend endpoint /api/analytics/revenue-trend not yet implemented</p>
+      </div>
+    );
   }
 
   return (
