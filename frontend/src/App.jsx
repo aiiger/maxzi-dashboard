@@ -14,6 +14,7 @@ import LocationMap from './components/LocationMap/LocationMap';
 import FloatingChatbot from './components/AIChat/FloatingChatbot';
 import { dashboardAPI } from './services/api';
 import './App.css';
+import './maxzi-final-style.css';
 
 function App() {
   // State Management
