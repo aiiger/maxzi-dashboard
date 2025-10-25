@@ -56,6 +56,11 @@ function App() {
         })
       ]);
 
+      // Debug: Log what backend returns
+      console.log('Backend Response - Overview:', overviewData);
+      console.log('Backend Response - Locations:', locationsData);
+      console.log('Backend Response - Platforms:', platformsData);
+
       setOverview(overviewData);
       setLocations(locationsData);
       setPlatforms(platformsData);
@@ -140,52 +145,45 @@ function App() {
         )}
 
         {/* KPI Cards Row - Show on Overview and Analytics views */}
-        {(activeView === 'overview' || activeView === 'analytics') && (
+        {(activeView === 'overview' || activeView === 'analytics') && overview && (
           <motion.div
             className="kpi-cards-grid"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            {overview && (
-              <>
-                <KPICard
-                  title="Total Revenue"
-                  value={`AED ${overview.total_revenue.toLocaleString()}`}
-                  change={overview.growth.revenue}
-                  trend="up"
-                  icon="💰"
-                  color="#8BC34A"
-                />
-                <KPICard
-                  title="Total Orders"
-                  value={overview.total_orders.toLocaleString()}
-                  change={overview.growth.orders}
-                  trend="up"
-                  icon="📦"
-                  color="#00CCBC"
-                />
-                <KPICard
-                  title="Average Order Value"
-                  value={`AED ${overview.avg_aov.toFixed(2)}`}
-                  change={overview.growth.aov}
-                  trend="down"
-                  icon="💵"
-                  color="#F97316"
-                />
-                {realtimeData && (
-                  <KPICard
-                    title="Live Orders"
-                    value={realtimeData.live_orders}
-                    change="Real-time"
-                    trend="neutral"
-                    icon="⚡"
-                    color="#7C3AED"
-                    isLive={true}
-                  />
-                )}
-              </>
-            )}
+            <KPICard
+              title="Total Revenue"
+              value={`AED ${(overview.total_revenue || 0).toLocaleString()}`}
+              change={overview.growth?.revenue || 'N/A'}
+              trend="up"
+              icon="💰"
+              color="#8BC34A"
+            />
+            <KPICard
+              title="Total Orders"
+              value={(overview.total_orders || 0).toLocaleString()}
+              change={overview.growth?.orders || 'N/A'}
+              trend="up"
+              icon="📦"
+              color="#00CCBC"
+            />
+            <KPICard
+              title="Average Order Value"
+              value={`AED ${(overview.avg_aov || 0).toFixed(2)}`}
+              change={overview.growth?.aov || 'N/A'}
+              trend="down"
+              icon="💵"
+              color="#F97316"
+            />
+            <KPICard
+              title="Active Platforms"
+              value="4"
+              change="Deliveroo, Talabat, SAPAAD, Noon"
+              trend="neutral"
+              icon="⚡"
+              color="#7C3AED"
+            />
           </motion.div>
         )}
 
