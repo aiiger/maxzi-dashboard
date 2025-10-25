@@ -68,6 +68,7 @@ function App() {
   // Load Dashboard Data
   useEffect(() => {
     loadDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadDashboardData = async () => {
@@ -457,87 +458,135 @@ function App() {
               >
                 <h2 className="section-title">📍 Locations by Platform</h2>
 
-                {/* Group locations by platform */}
-                {['deliveroo', 'talabat', 'sapaad', 'noon'].map((platformName, idx) => {
-                  const platformLocations = locations.filter(loc =>
-                    loc.platforms && loc.platforms.includes(platformName)
-                  );
+                {/* Platform sections in 2-column grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  {['deliveroo', 'talabat', 'sapaad', 'noon'].map((platformName, idx) => {
+                    const platformLocations = locations.filter(loc =>
+                      loc.platforms && loc.platforms.includes(platformName)
+                    );
 
-                  if (platformLocations.length === 0) return null;
+                    if (platformLocations.length === 0) return null;
 
-                  const platformConfig = {
-                    deliveroo: { name: 'Deliveroo', icon: '🚚', color: '#00CCBC' },
-                    talabat: { name: 'Talabat', icon: '🛵', color: '#FF5A00' },
-                    sapaad: { name: 'SAPAAD (Dine-in)', icon: '🏪', color: '#8BC34A' },
-                    noon: { name: 'Noon', icon: '🌙', color: '#FFC107' }
-                  };
+                    const platformConfig = {
+                      deliveroo: { name: 'Deliveroo', icon: '🚚', color: '#00CCBC', gradient: 'linear-gradient(135deg, rgba(0, 204, 188, 0.1) 0%, rgba(0, 204, 188, 0.05) 100%)' },
+                      talabat: { name: 'Talabat', icon: '🛵', color: '#FF5A00', gradient: 'linear-gradient(135deg, rgba(255, 90, 0, 0.1) 0%, rgba(255, 90, 0, 0.05) 100%)' },
+                      sapaad: { name: 'SAPAAD (Dine-in)', icon: '🏪', color: '#8BC34A', gradient: 'linear-gradient(135deg, rgba(139, 195, 74, 0.1) 0%, rgba(139, 195, 74, 0.05) 100%)' },
+                      noon: { name: 'Noon', icon: '🌙', color: '#FFC107', gradient: 'linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%)' }
+                    };
 
-                  const config = platformConfig[platformName];
+                    const config = platformConfig[platformName];
 
-                  return (
-                    <div key={platformName} style={{ marginBottom: '30px' }}>
-                      <div className="glass-card" style={{ borderLeft: `4px solid ${config.color}` }}>
-                        <h3 style={{
-                          color: config.color,
-                          fontSize: '1.3rem',
-                          marginBottom: '15px',
+                    return (
+                      <motion.div
+                        key={platformName}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: idx * 0.1, duration: 0.5 }}
+                        className="glass-card"
+                        style={{
+                          background: config.gradient,
+                          border: `2px solid ${config.color}30`,
+                          borderRadius: '16px',
+                          padding: '20px',
+                          position: 'relative',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {/* Platform Header */}
+                        <div style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '10px'
+                          justifyContent: 'space-between',
+                          marginBottom: '20px',
+                          paddingBottom: '15px',
+                          borderBottom: `2px solid ${config.color}30`
                         }}>
-                          <span>{config.icon}</span>
-                          <span>{config.name}</span>
-                          <span style={{ fontSize: '0.9rem', color: '#888', fontWeight: 'normal' }}>
-                            ({platformLocations.length} locations)
-                          </span>
-                        </h3>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              fontSize: '2rem',
+                              background: `${config.color}20`,
+                              padding: '8px 12px',
+                              borderRadius: '12px',
+                              lineHeight: 1
+                            }}>
+                              {config.icon}
+                            </div>
+                            <div>
+                              <h3 style={{ color: config.color, fontSize: '1.4rem', margin: 0 }}>
+                                {config.name}
+                              </h3>
+                              <p style={{ color: '#888', fontSize: '0.9rem', margin: '4px 0 0 0' }}>
+                                {platformLocations.length} locations
+                              </p>
+                            </div>
+                          </div>
+                          <div style={{
+                            background: `${config.color}15`,
+                            color: config.color,
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '0.85rem',
+                            fontWeight: 'bold'
+                          }}>
+                            AED {(platformLocations.reduce((sum, loc) => sum + (loc.revenue || 0), 0) / 1000).toFixed(0)}K
+                          </div>
+                        </div>
 
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                          gap: '15px'
-                        }}>
-                          {platformLocations.map((location) => (
-                            <div
+                        {/* Locations Grid */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '400px', overflowY: 'auto' }}>
+                          {platformLocations.map((location, locIdx) => (
+                            <motion.div
                               key={location.location_name}
-                              className="location-platform-card"
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.1 + locIdx * 0.05, duration: 0.3 }}
+                              whileHover={{ scale: 1.02, x: 5 }}
                               style={{
-                                background: 'rgba(255, 255, 255, 0.03)',
-                                borderRadius: '8px',
-                                padding: '15px',
-                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: '10px',
+                                padding: '12px 15px',
+                                border: `1px solid ${config.color}20`,
+                                cursor: 'pointer',
+                                transition: 'all 0.3s'
                               }}
                             >
-                              <div style={{ fontWeight: 'bold', fontSize: '1rem', marginBottom: '10px' }}>
-                                {location.location_name}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                                <span style={{ fontWeight: 'bold', fontSize: '0.95rem', flex: 1 }}>
+                                  {location.location_name}
+                                </span>
+                                <span style={{
+                                  background: `${config.color}20`,
+                                  color: config.color,
+                                  padding: '2px 8px',
+                                  borderRadius: '12px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 'bold'
+                                }}>
+                                  {(location.orders || 0).toLocaleString()}
+                                </span>
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                  <span style={{ color: '#888' }}>Revenue:</span>
+                              <div style={{ display: 'flex', gap: '15px', fontSize: '0.85rem' }}>
+                                <div>
+                                  <span style={{ color: '#888' }}>💰 </span>
                                   <span style={{ color: config.color, fontWeight: 'bold' }}>
-                                    AED {((location.revenue || 0) / 1000).toFixed(1)}K
+                                    {((location.revenue || 0) / 1000).toFixed(1)}K
                                   </span>
                                 </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                  <span style={{ color: '#888' }}>Orders:</span>
+                                <div>
+                                  <span style={{ color: '#888' }}>📊 AOV </span>
                                   <span style={{ fontWeight: 'bold' }}>
-                                    {(location.orders || 0).toLocaleString()}
-                                  </span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                  <span style={{ color: '#888' }}>AOV:</span>
-                                  <span style={{ fontWeight: 'bold' }}>
-                                    AED {(location.aov || 0).toFixed(2)}
+                                    {(location.aov || 0).toFixed(0)}
                                   </span>
                                 </div>
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </motion.div>
             </div>
           </div>
