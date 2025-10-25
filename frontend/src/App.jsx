@@ -240,8 +240,8 @@ function App() {
           <AIPanel insights={aiInsights} />
         )}
 
-        {/* KPI Cards Row - Show on Overview and Analytics views */}
-        {(activeView === 'overview' || activeView === 'analytics') && overview && (
+        {/* KPI Cards Row - Show only on Overview */}
+        {activeView === 'overview' && overview && (
           <motion.div
             className="kpi-cards-grid"
             initial={{ opacity: 0, y: 20 }}
@@ -446,7 +446,7 @@ function App() {
           </div>
         )}
 
-        {/* LOCATIONS VIEW - Location Performance */}
+        {/* LOCATIONS VIEW - Location Performance by Platform */}
         {activeView === 'locations' && (
           <div className="main-content-grid">
             <div className="full-width-section">
@@ -455,12 +455,89 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="section-title">📍 Location Performance</h2>
-                <LocationMap
-                  locations={locations}
-                  selectedLocation={selectedLocation}
-                  setSelectedLocation={setSelectedLocation}
-                />
+                <h2 className="section-title">📍 Locations by Platform</h2>
+
+                {/* Group locations by platform */}
+                {['deliveroo', 'talabat', 'sapaad', 'noon'].map((platformName, idx) => {
+                  const platformLocations = locations.filter(loc =>
+                    loc.platforms && loc.platforms.includes(platformName)
+                  );
+
+                  if (platformLocations.length === 0) return null;
+
+                  const platformConfig = {
+                    deliveroo: { name: 'Deliveroo', icon: '🚚', color: '#00CCBC' },
+                    talabat: { name: 'Talabat', icon: '🛵', color: '#FF5A00' },
+                    sapaad: { name: 'SAPAAD (Dine-in)', icon: '🏪', color: '#8BC34A' },
+                    noon: { name: 'Noon', icon: '🌙', color: '#FFC107' }
+                  };
+
+                  const config = platformConfig[platformName];
+
+                  return (
+                    <div key={platformName} style={{ marginBottom: '30px' }}>
+                      <div className="glass-card" style={{ borderLeft: `4px solid ${config.color}` }}>
+                        <h3 style={{
+                          color: config.color,
+                          fontSize: '1.3rem',
+                          marginBottom: '15px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px'
+                        }}>
+                          <span>{config.icon}</span>
+                          <span>{config.name}</span>
+                          <span style={{ fontSize: '0.9rem', color: '#888', fontWeight: 'normal' }}>
+                            ({platformLocations.length} locations)
+                          </span>
+                        </h3>
+
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                          gap: '15px'
+                        }}>
+                          {platformLocations.map((location) => (
+                            <div
+                              key={location.location_name}
+                              className="location-platform-card"
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.03)',
+                                borderRadius: '8px',
+                                padding: '15px',
+                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                              }}
+                            >
+                              <div style={{ fontWeight: 'bold', fontSize: '1rem', marginBottom: '10px' }}>
+                                {location.location_name}
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#888' }}>Revenue:</span>
+                                  <span style={{ color: config.color, fontWeight: 'bold' }}>
+                                    AED {((location.revenue || 0) / 1000).toFixed(1)}K
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#888' }}>Orders:</span>
+                                  <span style={{ fontWeight: 'bold' }}>
+                                    {(location.orders || 0).toLocaleString()}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#888' }}>AOV:</span>
+                                  <span style={{ fontWeight: 'bold' }}>
+                                    AED {(location.aov || 0).toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </motion.div>
             </div>
           </div>
@@ -470,18 +547,90 @@ function App() {
         {activeView === 'analytics' && (
           <div className="main-content-grid">
             <div className="full-width-section">
+              <h2 className="section-title">📊 Analytics & Insights</h2>
+
               <motion.div
                 className="glass-card chart-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
+                style={{ marginBottom: '20px' }}
               >
                 <div className="card-header">
-                  <h3>📊 Revenue Trends (30 Days)</h3>
+                  <h3>📈 30-Day Revenue Trend</h3>
                   <button className="expand-btn">⛶</button>
                 </div>
                 <RevenueChart />
               </motion.div>
+
+              {/* Analytics Summary Stats */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+                <motion.div
+                  className="glass-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                  style={{ padding: '20px' }}
+                >
+                  <h4 style={{ marginBottom: '15px', color: '#8BC34A' }}>📊 Key Metrics</h4>
+                  {overview && (
+                    <div style={{ fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#888' }}>Total Revenue:</span>
+                        <span style={{ fontWeight: 'bold' }}>AED {overview.total_revenue.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#888' }}>Total Orders:</span>
+                        <span style={{ fontWeight: 'bold' }}>{overview.total_orders.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#888' }}>Average AOV:</span>
+                        <span style={{ fontWeight: 'bold' }}>AED {overview.avg_aov.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  className="glass-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  style={{ padding: '20px' }}
+                >
+                  <h4 style={{ marginBottom: '15px', color: '#00CCBC' }}>🚚 Platform Breakdown</h4>
+                  <div style={{ fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {platforms.slice(0, 4).map((p, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#888' }}>{p.name}:</span>
+                        <span style={{ fontWeight: 'bold', color: p.color }}>
+                          AED {((p.revenue || 0) / 1000).toFixed(0)}K
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="glass-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  style={{ padding: '20px' }}
+                >
+                  <h4 style={{ marginBottom: '15px', color: '#F97316' }}>📍 Top Locations</h4>
+                  <div style={{ fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {locations.slice(0, 5).map((loc, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#888', fontSize: '0.85rem' }}>{loc.location_name.substring(0, 20)}...</span>
+                        <span style={{ fontWeight: 'bold' }}>
+                          AED {((loc.revenue || 0) / 1000).toFixed(0)}K
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </div>
         )}
