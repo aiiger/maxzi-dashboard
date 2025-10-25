@@ -113,18 +113,21 @@ const PlatformCard = ({ platform, delay = 0 }) => {
                   {platform.growth || 'N/A'}
                 </span>
               </div>
-            </div>
 
-            <button 
-              className="view-details-btn"
-              style={{ borderColor: platform.color, color: platform.color }}
-              onClick={(e) => {
-                e.stopPropagation();
-                alert(`Opening detailed analytics for ${platform.name}...`);
-              }}
-            >
-              View Full Analytics →
-            </button>
+              <div className="stat-row">
+                <span>Total Revenue</span>
+                <span style={{ fontWeight: 'bold', color: platform.color }}>
+                  AED {(platform.revenue || 0).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="stat-row">
+                <span>Total Orders</span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {(platform.orders || 0).toLocaleString()}
+                </span>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
