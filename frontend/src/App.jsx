@@ -27,6 +27,45 @@ function App() {
   const [activeView, setActiveView] = useState('overview');
   const [selectedLocation, setSelectedLocation] = useState(null);
 
+  // Helper function to get platform icons
+  const getPlatformIcon = (platform) => {
+    const icons = {
+      deliveroo: '🚚',
+      talabat: '🛵',
+      sapaad: '🏪',
+      noon: '🌙'
+    };
+    return icons[platform.toLowerCase()] || '📦';
+  };
+
+  // Helper function to aggregate location data by location name
+  const aggregateLocationsByName = (locationData) => {
+    const aggregated = {};
+
+    locationData.forEach(item => {
+      const locName = item.location;
+      if (!aggregated[locName]) {
+        aggregated[locName] = {
+          location_name: locName,
+          revenue: 0,
+          orders: 0,
+          platforms: []
+        };
+      }
+      aggregated[locName].revenue += item.total_revenue;
+      aggregated[locName].orders += item.total_orders;
+      aggregated[locName].platforms.push(item.platform);
+    });
+
+    // Convert to array and calculate AOV
+    return Object.values(aggregated).map(loc => ({
+      ...loc,
+      aov: loc.orders > 0 ? loc.revenue / loc.orders : 0,
+      rating: 'N/A',
+      type: 'branch'
+    }));
+  };
+
   // Load Dashboard Data
   useEffect(() => {
     loadDashboardData();
@@ -61,9 +100,47 @@ function App() {
       console.log('Backend Response - Locations:', JSON.stringify(locationsData, null, 2));
       console.log('Backend Response - Platforms:', JSON.stringify(platformsData, null, 2));
 
-      setOverview(overviewData);
-      setLocations(locationsData);
-      setPlatforms(platformsData);
+      // Extract data from backend response wrapper and transform
+      const transformedOverview = overviewData?.data ? {
+        total_revenue: overviewData.data.total_revenue,
+        total_orders: overviewData.data.total_orders,
+        avg_aov: overviewData.data.avg_order_value,
+        growth: {
+          revenue: 'N/A',
+          orders: 'N/A',
+          aov: 'N/A'
+        }
+      } : null;
+
+      // Transform platforms data
+      const platformColors = {
+        deliveroo: '#00CCBC',
+        talabat: '#FF5A00',
+        sapaad: '#8BC34A',
+        noon: '#FFC107'
+      };
+
+      const transformedPlatforms = platformsData?.data ? platformsData.data.map(p => ({
+        name: p.platform.charAt(0).toUpperCase() + p.platform.slice(1),
+        platform: p.platform,
+        revenue: p.total_revenue,
+        orders: p.total_orders,
+        aov: p.avg_order_value,
+        growth: 'N/A',
+        icon: getPlatformIcon(p.platform),
+        color: platformColors[p.platform.toLowerCase()] || '#6B7280'
+      })) : [];
+
+      // Aggregate locations data by location name
+      const transformedLocations = locationsData?.data ? aggregateLocationsByName(locationsData.data) : [];
+
+      console.log('Transformed Overview:', transformedOverview);
+      console.log('Transformed Platforms:', transformedPlatforms);
+      console.log('Transformed Locations:', transformedLocations);
+
+      setOverview(transformedOverview);
+      setLocations(transformedLocations);
+      setPlatforms(transformedPlatforms);
 
       // Only set social media if backend returns it - NO MOCK DATA
       setSocialMedia(null);
