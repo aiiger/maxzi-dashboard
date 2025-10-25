@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import FloatingSidebar from './components/Sidebar/FloatingSidebar';
 import KPICard from './components/KPICards/KPICard';
 import PlatformCard from './components/PlatformCards/PlatformCard';
@@ -21,8 +21,7 @@ function App() {
   const [locations, setLocations] = useState([]);
   const [platforms, setPlatforms] = useState([]);
   const [socialMedia, setSocialMedia] = useState(null);
-  const [aiInsights, setAIInsights] = useState(null);
-  const [realtimeData, setRealtimeData] = useState(null);
+  const [aiInsights] = useState(null); // Reserved for future AI insights feature
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('overview');
   const [selectedLocation, setSelectedLocation] = useState(null);
