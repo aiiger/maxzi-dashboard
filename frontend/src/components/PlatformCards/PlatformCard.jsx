@@ -31,16 +31,16 @@ const PlatformCard = ({ platform, delay = 0 }) => {
       onClick={() => setIsExpanded(!isExpanded)}
     >
       <div className="platform-header">
-        <div className="platform-icon" style={{ 
+        <div className="platform-icon" style={{
           background: `${platform.color}20`,
-          color: platform.color 
+          color: platform.color
         }}>
           {platform.icon}
         </div>
-        
+
         <div className="platform-info">
           <h4>{platform.name}</h4>
-          <span 
+          <span
             className="platform-status"
             style={{ color: status.color }}
           >
@@ -48,30 +48,32 @@ const PlatformCard = ({ platform, delay = 0 }) => {
           </span>
         </div>
 
-        <div className="platform-rating">
-          {platform.rating}⭐
-        </div>
+        {platform.rating && (
+          <div className="platform-rating">
+            {platform.rating}⭐
+          </div>
+        )}
       </div>
 
       <div className="platform-metrics">
         <div className="platform-metric">
           <div className="metric-label">Revenue</div>
           <div className="metric-value" style={{ color: platform.color }}>
-            AED {(platform.revenue / 1000).toFixed(1)}K
+            AED {((platform.revenue || 0) / 1000).toFixed(1)}K
           </div>
         </div>
 
         <div className="platform-metric">
           <div className="metric-label">Orders</div>
           <div className="metric-value">
-            {platform.orders.toLocaleString()}
+            {(platform.orders || 0).toLocaleString()}
           </div>
         </div>
 
         <div className="platform-metric">
           <div className="metric-label">AOV</div>
           <div className="metric-value">
-            AED {platform.aov.toFixed(2)}
+            AED {(platform.aov || 0).toFixed(2)}
           </div>
         </div>
       </div>
@@ -86,27 +88,29 @@ const PlatformCard = ({ platform, delay = 0 }) => {
             transition={{ duration: 0.3 }}
           >
             <div className="expanded-stats">
-              <div className="stat-row">
-                <span>Market Share</span>
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill"
-                    style={{ 
-                      width: `${platform.market_share}%`,
-                      background: platform.color 
-                    }}
-                  ></div>
+              {platform.market_share && (
+                <div className="stat-row">
+                  <span>Market Share</span>
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{
+                        width: `${platform.market_share}%`,
+                        background: platform.color
+                      }}
+                    ></div>
+                  </div>
+                  <span>{platform.market_share.toFixed(1)}%</span>
                 </div>
-                <span>{platform.market_share.toFixed(1)}%</span>
-              </div>
+              )}
 
               <div className="stat-row">
                 <span>Growth Rate</span>
-                <span className="growth-badge" style={{ 
+                <span className="growth-badge" style={{
                   background: `${status.color}20`,
-                  color: status.color 
+                  color: status.color
                 }}>
-                  {platform.growth}
+                  {platform.growth || 'N/A'}
                 </span>
               </div>
             </div>
