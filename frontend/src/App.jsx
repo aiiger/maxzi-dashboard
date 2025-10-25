@@ -30,42 +30,43 @@ function App() {
   // Load Dashboard Data
   useEffect(() => {
     loadDashboardData();
-    
-    // Real-time updates every 5 seconds
-    const interval = setInterval(() => {
-      dashboardAPI.getRealtime().then(data => setRealtimeData(data));
-    }, 5000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      
+
+      // Only call endpoints that exist on the backend
       const [
         overviewData,
         locationsData,
-        platformsData,
-        socialData,
-        aiData,
-        realtimeData
+        platformsData
       ] = await Promise.all([
-        dashboardAPI.getOverview(),
-        dashboardAPI.getLocations(),
-        dashboardAPI.getPlatforms(),
-        dashboardAPI.getSocialMedia(),
-        dashboardAPI.getAIInsights(),
-        dashboardAPI.getRealtime()
+        dashboardAPI.getOverview().catch(err => {
+          console.warn('Overview API failed:', err);
+          return null;
+        }),
+        dashboardAPI.getLocations().catch(err => {
+          console.warn('Locations API failed:', err);
+          return [];
+        }),
+        dashboardAPI.getPlatforms().catch(err => {
+          console.warn('Platforms API failed:', err);
+          return [];
+        })
       ]);
 
       setOverview(overviewData);
       setLocations(locationsData);
       setPlatforms(platformsData);
-      setSocialMedia(socialData);
-      setAIInsights(aiData);
-      setRealtimeData(realtimeData);
-      
+
+      // Set mock data for features not yet implemented in backend
+      setSocialMedia({
+        instagram: { followers: 12500, growth: '+8.5%' },
+        facebook: { followers: 8200, growth: '+5.2%' },
+        linktree: { ctr: '12.8%' }
+      });
+
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
