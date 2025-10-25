@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3004/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -20,15 +20,15 @@ const api = axios.create({
 // ============================================================================
 
 export const dashboardAPI = {
-  // Dashboard Overview
+  // Dashboard Overview - maps to /api/database/kpis
   getOverview: async () => {
-    const response = await api.get('/overview');
+    const response = await api.get('/database/kpis');
     return response.data;
   },
 
-  // Location Performance
+  // Location Performance - maps to /api/database/location-performance
   getLocations: async () => {
-    const response = await api.get('/locations');
+    const response = await api.get('/database/location-performance');
     return response.data;
   },
 
@@ -37,9 +37,9 @@ export const dashboardAPI = {
     return response.data;
   },
 
-  // Platform Performance
+  // Platform Performance - maps to /api/database/platform-distribution
   getPlatforms: async () => {
-    const response = await api.get('/platforms');
+    const response = await api.get('/database/platform-distribution');
     return response.data;
   },
 
