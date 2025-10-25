@@ -56,10 +56,10 @@ function App() {
         })
       ]);
 
-      // Debug: Log what backend returns
-      console.log('Backend Response - Overview:', overviewData);
-      console.log('Backend Response - Locations:', locationsData);
-      console.log('Backend Response - Platforms:', platformsData);
+      // Debug: Log what backend returns (with full structure)
+      console.log('Backend Response - Overview:', JSON.stringify(overviewData, null, 2));
+      console.log('Backend Response - Locations:', JSON.stringify(locationsData, null, 2));
+      console.log('Backend Response - Platforms:', JSON.stringify(platformsData, null, 2));
 
       setOverview(overviewData);
       setLocations(locationsData);
