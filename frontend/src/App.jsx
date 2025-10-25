@@ -141,8 +141,32 @@ function App() {
       setLocations(transformedLocations);
       setPlatforms(transformedPlatforms);
 
-      // Only set social media if backend returns it - NO MOCK DATA
-      setSocialMedia(null);
+      // Fetch Meta/Social Media data from backend
+      try {
+        const socialData = await dashboardAPI.getSocialMedia();
+        console.log('Backend Response - Social Media:', JSON.stringify(socialData, null, 2));
+
+        if (socialData?.data) {
+          setSocialMedia({
+            instagram: {
+              followers: socialData.data.instagram?.followers || 0,
+              growth: socialData.data.instagram?.growth || 'N/A'
+            },
+            facebook: {
+              followers: socialData.data.facebook?.fans || 0,
+              growth: socialData.data.facebook?.growth || 'N/A'
+            },
+            linktree: {
+              ctr: 'N/A'
+            }
+          });
+        } else {
+          setSocialMedia(null);
+        }
+      } catch (err) {
+        console.warn('Social Media API failed:', err);
+        setSocialMedia(null);
+      }
 
     } catch (error) {
       console.error('Error loading dashboard:', error);

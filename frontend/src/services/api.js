@@ -43,9 +43,9 @@ export const dashboardAPI = {
     return response.data;
   },
 
-  // Social Media Metrics
+  // Social Media Metrics - Meta API
   getSocialMedia: async () => {
-    const response = await api.get('/social-media');
+    const response = await api.get('/social/meta-combined');
     return response.data;
   },
 
